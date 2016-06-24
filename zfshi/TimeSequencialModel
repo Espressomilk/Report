@@ -1,0 +1,56 @@
+\section{Time Sequencial Model}
+At the very beginning of this project, we used a very intuitive and direct model, which is used in (\cite{TJ}). In this model, we build time sequencial features of the stock. In detail, we cut our data into multiple segments. Each segment consists of data from six days(since our data is sampled at a rate of 1 points/day). Each segments are not overlapped to make sure the independence. For the data from the first five days, we take the closing prices as five features for input. And for the data from the last day, we take the closing price as the label for target. 
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\multicolumn{5}{|l|}{Input}           & Target \\ \hline
+$d_1$ & $d_2$ & $d_2$ & $d_3$ & $d_4$ & $d_5$  \\ \hline
+\end{tabular}
+\end{center}
+
+In the above table, $d_i, i=1,...,6$ means the closing price of the $i^th$ day from each segment. Then we use a two-layer feed-forward network with sigmoid hidden neurons and linear output neurons to train the model.
+
+\begin{center}
+\includegraphics[width=3in]{NN.png}    
+\end{center}                             
+
+In the hidden layer, we use 10 neurons. The network will be trained with Levenberg-Marquardt backpropagation algorithm as long as there is enough memory. 
+
+What's more, we centralize the data before we input them into our model. The result is as follows:
+
+\begin{tabular}{|l|l|l|}
+\hline
+           & MSE       & R         \\ \hline
+Training   & $1.96e-2$ & $9.90e-1$ \\ \hline
+Validation & $1.51e-2$ & $9.93e-1$ \\ \hline
+Testing    & $1.67e-2$ & $9.92e-1$ \\ \hline
+\end{tabular}
+
+The error histogram and regression graph are shown in Fig.\ref{fig:EH} and Fig.\ref{fig:R}.
+
+\begin{figure}[htbp]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=2.2in]{EH.pdf}
+\caption{Error Histogram}
+\label{fig:EH}
+\end{minipage}%
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=2.2in]{Regression.pdf}
+\caption{Regression}
+\label{fig:R}
+\end{minipage}
+\end{figure}
+
+The result seems quite well for us to predict the closing price on the last day based on the data from prior 5 day. However, it is meaningless since an intrinsic characteristic of the data. To some extent, the prices coming from the prior 5 days set a range for the price on the sixth day to fluctuate in. Therefore, if we try to do the regression, the result will always remain extremely well. This intrinsic characteristic can also be seen as a time lag of the data, which may be shown clearly if we draw the original data with the predict line as shown in Fig.\ref{fig:OTPL}.
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=3in]{600000_SH.png}
+\caption{Original Trend with Predict Line}
+\label{fig:OTPL}
+\end{center}
+\end{figure}
+
+Basically, this is a bad attempt. Therefore, instead of predicting the price directly like above, we tried to do some other predictions and used other models.
